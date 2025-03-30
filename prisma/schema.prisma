@@ -79,6 +79,7 @@ model Product {
   category    Category?  @relation(fields: [categoryId], references: [id])
   reviews     Review[]
   cartItems   CartItem[]
+  orderItems  OrderItem[]
   createdAt   DateTime   @default(now())
   updatedAt   DateTime   @updatedAt
 }
@@ -105,14 +106,15 @@ model Review {
 }
 
 model Order {
-  id        String      @id @default(cuid())
-  status    OrderStatus @default(PENDING)
-  total     Float
-  userId    String
-  user      User        @relation(fields: [userId], references: [id])
-  items     OrderItem[]
-  createdAt DateTime    @default(now())
-  updatedAt DateTime    @updatedAt
+  id              String      @id @default(cuid())
+  status          OrderStatus @default(PENDING)
+  total           Float
+  userId          String
+  user            User        @relation(fields: [userId], references: [id])
+  items           OrderItem[]
+  shippingAddress String
+  createdAt       DateTime    @default(now())
+  updatedAt       DateTime    @updatedAt
 }
 
 model OrderItem {
@@ -120,6 +122,7 @@ model OrderItem {
   orderId   String
   order     Order    @relation(fields: [orderId], references: [id])
   productId String
+  product   Product  @relation(fields: [productId], references: [id])
   quantity  Int
   price     Float
   createdAt DateTime @default(now())

@@ -23,7 +23,7 @@ export interface SafeProduct {
   description: string
   price: number
   stock: number
-  images: string[]
+  images: Image[]
   categoryId: string
   category: SafeCategory
   createdAt: Date
@@ -75,12 +75,20 @@ export interface SafeCartItem {
   updatedAt: Date
 }
 
+export interface Image {
+  id: string
+  url: string
+  productId: string | null
+  createdAt: Date
+  updatedAt: Date
+}
+
 export interface Product {
   id: string
   name: string
   description: string
   price: number
-  images: string[]
+  images: Image[]
   categoryId: string
   createdAt: Date
   updatedAt: Date

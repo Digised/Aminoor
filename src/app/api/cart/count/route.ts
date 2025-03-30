@@ -1,7 +1,9 @@
 import { NextResponse } from 'next/server'
 import { getServerSession } from 'next-auth'
-import prisma from '@/lib/prisma'
 import { authOptions } from '@/lib/auth'
+import prisma from '@/lib/prisma'
+
+export const dynamic = 'force-dynamic'
 
 export async function GET() {
   try {
@@ -17,14 +19,9 @@ export async function GET() {
       },
     })
 
-    const count = cart?.items.reduce((total, item) => total + item.quantity, 0) || 0
-
-    return NextResponse.json({ count })
+    return NextResponse.json({ count: cart?.items.length || 0 })
   } catch (error) {
     console.error('Error getting cart count:', error)
-    return NextResponse.json(
-      { error: 'Failed to get cart count' },
-      { status: 500 }
-    )
+    return NextResponse.json({ count: 0 })
   }
 } 

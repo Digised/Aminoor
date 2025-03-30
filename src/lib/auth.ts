@@ -59,26 +59,26 @@ export const authOptions: NextAuthOptions = {
             id: true,
             name: true,
             email: true,
-            password: true,
+            hashedPassword: true,
             image: true,
             role: true,
           },
         })
 
-        if (!user || !user.password) {
+        if (!user || !user.hashedPassword) {
           throw new Error("Invalid credentials")
         }
 
         const isCorrectPassword = await bcrypt.compare(
           credentials.password,
-          user.password
+          user.hashedPassword
         )
 
         if (!isCorrectPassword) {
           throw new Error("Invalid credentials")
         }
 
-        const { password: _, ...userWithoutPassword } = user
+        const { hashedPassword: _, ...userWithoutPassword } = user
         return userWithoutPassword
       },
     }),

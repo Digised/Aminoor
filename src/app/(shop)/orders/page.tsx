@@ -20,9 +20,13 @@ export default async function OrdersPage() {
     include: {
       items: {
         include: {
-          product: true,
-        },
-      },
+          product: {
+            include: {
+              images: true
+            }
+          }
+        }
+      }
     },
     orderBy: {
       createdAt: 'desc',
@@ -87,7 +91,7 @@ export default async function OrdersPage() {
                       <li key={item.id} className="py-6 flex">
                         <div className="h-24 w-24 flex-shrink-0 overflow-hidden rounded-md border border-gray-200">
                           <Image
-                            src={item.product.images[0]}
+                            src={item.product.images[0]?.url || '/placeholder.jpg'}
                             alt={item.product.name}
                             width={96}
                             height={96}

@@ -6,6 +6,22 @@ import { useState } from 'react'
 import { formatPrice } from '@/lib/utils'
 import Image from 'next/image'
 
+export const dynamic = 'force-dynamic'
+
+interface CheckoutItem {
+  id: string
+  quantity: number
+  product: {
+    id: string
+    name: string
+    price: number
+    images: {
+      id: string
+      url: string
+    }[]
+  }
+}
+
 export default function CheckoutPage() {
   const router = useRouter()
   const { items, clearCart } = useCart()
@@ -13,7 +29,7 @@ export default function CheckoutPage() {
   const [error, setError] = useState('')
 
   const total = items.reduce(
-    (acc, item) => acc + item.price * item.quantity,
+    (acc, item) => acc + item.product.price * item.quantity,
     0
   )
 
@@ -49,7 +65,7 @@ export default function CheckoutPage() {
           items: items.map((item) => ({
             productId: item.id,
             quantity: item.quantity,
-            price: item.price,
+            price: item.product.price,
           })),
           shippingAddress,
         }),
@@ -201,8 +217,8 @@ export default function CheckoutPage() {
                     <li key={item.id} className="py-6 flex">
                       <div className="h-24 w-24 flex-shrink-0 overflow-hidden rounded-md border border-gray-200">
                         <Image
-                          src={item.images[0]}
-                          alt={item.name}
+                          src={item.product.images[0]?.url || '/placeholder.jpg'}
+                          alt={item.product.name}
                           width={96}
                           height={96}
                           className="h-full w-full object-cover object-center"
@@ -212,9 +228,9 @@ export default function CheckoutPage() {
                       <div className="ml-4 flex flex-1 flex-col">
                         <div>
                           <div className="flex justify-between text-base font-medium text-gray-900">
-                            <h3>{item.name}</h3>
+                            <h3>{item.product.name}</h3>
                             <p className="ml-4">
-                              {formatPrice(item.price * item.quantity)}
+                              {formatPrice(item.product.price * item.quantity)}
                             </p>
                           </div>
                         </div>

@@ -34,12 +34,13 @@ export async function POST(req: Request) {
       data: {
         name,
         email,
-        password: hashedPassword,
+        hashedPassword,
+        role: "USER",
       },
     });
 
     // Remove password from response
-    const { password: _, ...userWithoutPassword } = user;
+    const { hashedPassword: _, ...userWithoutPassword } = user;
 
     return NextResponse.json(userWithoutPassword);
   } catch (error) {

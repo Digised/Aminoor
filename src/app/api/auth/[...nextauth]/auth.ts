@@ -27,23 +27,23 @@ export const authOptions: NextAuthOptions = {
             id: true,
             email: true,
             name: true,
-            password: true,
+            hashedPassword: true,
             role: true,
             image: true,
           }
         });
 
-        if (!user || !user.password) {
+        if (!user || !user.hashedPassword) {
           throw new Error("Invalid credentials");
         }
 
-        const isPasswordValid = await compare(credentials.password, user.password);
+        const isPasswordValid = await compare(credentials.password, user.hashedPassword);
 
         if (!isPasswordValid) {
           throw new Error("Invalid credentials");
         }
 
-        const { password: _, ...userWithoutPassword } = user;
+        const { hashedPassword: _, ...userWithoutPassword } = user;
         return {
           ...userWithoutPassword,
           isAdmin: userWithoutPassword.role === "ADMIN"
