@@ -2,7 +2,7 @@
 
 import { useRouter } from 'next/navigation'
 import { useCart } from '@/hooks/useCart'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { formatPrice } from '@/lib/utils'
 import Image from 'next/image'
 
@@ -27,11 +27,20 @@ export default function CheckoutPage() {
   const { items, clearCart } = useCart()
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
+  const [mounted, setMounted] = useState(false)
+
+  useEffect(() => {
+    setMounted(true)
+  }, [])
 
   const total = items.reduce(
     (acc, item) => acc + item.product.price * item.quantity,
     0
   )
+
+  if (!mounted) {
+    return null
+  }
 
   if (items.length === 0) {
     router.push('/cart')
@@ -56,14 +65,14 @@ export default function CheckoutPage() {
         .filter(Boolean)
         .join('\n')
 
-      const response = await fetch('/api/orders', {
+      const response = await fetch('/api/checkout', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
           items: items.map((item) => ({
-            productId: item.id,
+            productId: item.product.id,
             quantity: item.quantity,
             price: item.product.price,
           })),
@@ -76,9 +85,9 @@ export default function CheckoutPage() {
         throw new Error(data.message || 'Something went wrong')
       }
 
-      const order = await response.json()
+      const { orderId } = await response.json()
       clearCart()
-      router.push(`/orders/${order.id}`)
+      router.push(`/orders/${orderId}`)
     } catch (error) {
       console.error('Checkout error:', error)
       setError(error instanceof Error ? error.message : 'Something went wrong')

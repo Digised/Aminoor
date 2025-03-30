@@ -10,6 +10,21 @@ const nextConfig = {
       },
     ],
   },
+  experimental: {
+    serverActions: true,
+  },
+  output: 'standalone',
+  // Disable static optimization for checkout page
+  staticPageGenerationTimeout: 0,
+  // Configure dynamic routes
+  async rewrites() {
+    return [
+      {
+        source: '/checkout',
+        destination: '/checkout',
+      },
+    ]
+  },
 }
 
 module.exports = nextConfig
