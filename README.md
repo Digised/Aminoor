@@ -1,15 +1,19 @@
 # Cursor Shop
 
-A modern e-commerce platform built with Next.js, Prisma, and Stripe.
+A modern e-commerce platform built with Next.js 14, TypeScript, Prisma, and Stripe.
 
 ## Features
 
-- User authentication with NextAuth.js and Google OAuth
-- Product management with categories
-- Shopping cart functionality
-- Order processing with Stripe
-- Admin dashboard
-- Responsive design with Tailwind CSS
+- **Modern Tech Stack**: Next.js 14 with App Router, TypeScript, and Tailwind CSS
+- **Authentication**: NextAuth.js with Google OAuth and email/password login
+- **Database**: PostgreSQL with Prisma ORM
+- **Payment Processing**: Secure checkout with Stripe integration
+- **Product Management**: Categories, products, and inventory management
+- **Shopping Experience**: Responsive design, search functionality, and cart management
+- **User Accounts**: Profile management, order history, and wishlist
+- **Admin Dashboard**: Comprehensive admin panel for managing products, orders, and users
+- **PWA Support**: Progressive Web App capabilities for mobile users
+- **Performance Optimized**: Image optimization, caching strategies, and security headers
 
 ## Prerequisites
 
@@ -58,12 +62,40 @@ npm run dev
 ```
 src/
 ├── app/                    # Next.js app directory
-│   ├── (admin)/           # Admin routes
+│   ├── (admin)/           # Admin routes (protected)
+│   │   ├── dashboard/     # Admin dashboard
+│   │   ├── products/      # Product management
+│   │   ├── categories/    # Category management
+│   │   ├── orders/        # Order management
+│   │   └── users/         # User management
+│   ├── (auth)/            # Authentication routes
+│   │   ├── login/         # Login page
+│   │   └── register/      # Registration page
 │   ├── (shop)/            # Shop routes
+│   │   ├── products/      # Product listings
+│   │   ├── categories/    # Category pages
+│   │   ├── cart/          # Shopping cart
+│   │   ├── checkout/      # Checkout process
+│   │   ├── account/       # User account
+│   │   └── search/        # Search functionality
 │   └── api/               # API routes
+│       ├── auth/          # Authentication endpoints
+│       ├── products/      # Product endpoints
+│       ├── categories/    # Category endpoints
+│       ├── orders/        # Order endpoints
+│       └── stripe/        # Stripe integration
 ├── components/            # React components
+│   ├── layout/            # Layout components
+│   ├── ui/                # UI components
+│   ├── forms/             # Form components
+│   └── products/          # Product-related components
 ├── lib/                   # Utility functions and configurations
-└── types/                # TypeScript type definitions
+│   ├── prisma.ts          # Prisma client
+│   ├── auth.ts            # NextAuth configuration
+│   ├── stripe.ts          # Stripe configuration
+│   └── utils.ts           # Utility functions
+├── hooks/                 # Custom React hooks
+└── types/                 # TypeScript type definitions
 ```
 
 ## Environment Variables
@@ -85,6 +117,16 @@ STRIPE_SECRET_KEY="your-stripe-secret-key"
 STRIPE_PUBLISHABLE_KEY="your-stripe-publishable-key"
 STRIPE_WEBHOOK_SECRET="your-stripe-webhook-secret"
 ```
+
+## Key Technologies
+
+- **Frontend**: Next.js 14, React, TypeScript, Tailwind CSS
+- **Backend**: Next.js API Routes, Prisma ORM
+- **Database**: PostgreSQL
+- **Authentication**: NextAuth.js
+- **Payment Processing**: Stripe
+- **Deployment**: Vercel (recommended)
+- **PWA**: next-pwa
 
 ## Contributing
 
