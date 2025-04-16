@@ -1,5 +1,7 @@
 # Cursor Shop
 
+![image](https://github.com/user-attachments/assets/c84e74fd-b9a2-49f6-952f-681ed9d3a8d6)
+
 A modern e-commerce platform built with Next.js 14, TypeScript, Prisma, and Stripe.
 
 ## Features
