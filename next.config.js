@@ -10,9 +10,6 @@ const nextConfig = {
       },
     ],
   },
-  experimental: {
-    serverActions: true,
-  },
   output: 'standalone',
   // Disable static optimization for checkout page
   staticPageGenerationTimeout: 0,

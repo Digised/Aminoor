@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import Image from 'next/image';
-import { Product, Category, Image as PrismaImage, Review } from '@prisma/client';
+import { Product, Category, Review } from '@prisma/client';
 import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 import toast from 'react-hot-toast';
@@ -10,7 +10,7 @@ import { useCart } from '@/hooks/useCart';
 
 type ProductWithDetails = Product & {
   category: Category;
-  images: PrismaImage[];
+  images: string[];
   reviews: (Review & {
     user: {
       name: string | null;
@@ -39,7 +39,7 @@ export default function ProductPage({ params }: { params: { id: string } }) {
         const data = await res.json();
         setProduct(data);
         if (data.images.length > 0) {
-          setSelectedImage(data.images[0].url);
+          setSelectedImage(data.images[0]);
         }
       } catch (error) {
         console.error('Error:', error);
@@ -97,7 +97,7 @@ export default function ProductPage({ params }: { params: { id: string } }) {
           {/* Main Image */}
           <div className="relative h-96 w-full rounded-lg overflow-hidden">
             <Image
-              src={selectedImage || product.images[0]?.url || '/no-image.jpg'}
+              src={selectedImage || product.images[0] || '/no-image.jpg'}
               alt={product.name}
               fill
               className="object-contain"
@@ -105,17 +105,17 @@ export default function ProductPage({ params }: { params: { id: string } }) {
           </div>
           {/* Thumbnail Gallery */}
           <div className="grid grid-cols-4 gap-2">
-            {product.images.map((image) => (
+            {product.images.map((image, index) => (
               <button
-                key={image.id}
-                onClick={() => setSelectedImage(image.url)}
+                key={index}
+                onClick={() => setSelectedImage(image)}
                 className={`relative h-24 w-full rounded-lg overflow-hidden ${
-                  selectedImage === image.url ? 'ring-2 ring-indigo-600' : ''
+                  selectedImage === image ? 'ring-2 ring-indigo-600' : ''
                 }`}
               >
                 <Image
-                  src={image.url}
-                  alt={product.name}
+                  src={image}
+                  alt={`${product.name} thumbnail ${index + 1}`}
                   fill
                   className="object-cover"
                 />

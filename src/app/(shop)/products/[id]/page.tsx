@@ -12,6 +12,16 @@ interface ProductPageProps {
   }
 }
 
+// تابع کمکی برای استخراج URL تصویر
+const getImageUrl = (image: any): string => {
+  if (typeof image === 'string') {
+    return image;
+  } else if (image && typeof image === 'object') {
+    return image.url || image.imageUrl || '';
+  }
+  return '';
+};
+
 export default function ProductPage({ params }: ProductPageProps) {
   const [product, setProduct] = useState<any>(null);
   const [loading, setLoading] = useState(true);
@@ -54,7 +64,9 @@ export default function ProductPage({ params }: ProductPageProps) {
             {/* Main image */}
             <div className="relative aspect-w-1 aspect-h-1 w-full overflow-hidden rounded-lg bg-gray-100">
               <Image
-                src={(product.images && product.images[selectedImageIndex]?.url) || '/placeholder.jpg'}
+                src={product.images && product.images.length > 0 
+                  ? getImageUrl(product.images[selectedImageIndex]) 
+                  : '/placeholder.jpg'}
                 alt={`${product.name} - Image ${selectedImageIndex + 1}`}
                 width={500}
                 height={500}
@@ -96,7 +108,7 @@ export default function ProductPage({ params }: ProductPageProps) {
               <div className="flex space-x-2 overflow-x-auto pb-2 px-1">
                 {product.images.map((image: any, index: number) => (
                   <button
-                    key={image.id}
+                    key={index}
                     onClick={() => setSelectedImageIndex(index)}
                     className={`relative flex-shrink-0 w-20 h-20 rounded-md overflow-hidden transition-all duration-200 ${
                       selectedImageIndex === index
@@ -105,7 +117,7 @@ export default function ProductPage({ params }: ProductPageProps) {
                     }`}
                   >
                     <Image
-                      src={image.url}
+                      src={getImageUrl(image)}
                       alt={`${product.name} thumbnail ${index + 1}`}
                       fill
                       className="object-cover object-center"
@@ -138,14 +150,27 @@ export default function ProductPage({ params }: ProductPageProps) {
             </div>
 
             <div className="mt-8">
-              <AddToCartButton 
-                product={{
-                  id: product.id,
-                  name: product.name,
-                  price: product.price,
-                  images: product.images.map((img: any) => img.url)
-                }} 
-              />
+              {product.stock <= 0 ? (
+                <div>
+                  <p className="text-red-600 font-medium mb-2">Out of Stock</p>
+                  <button
+                    type="button"
+                    className="flex w-full items-center justify-center rounded-md border border-transparent bg-gray-300 px-8 py-3 text-base font-medium text-gray-500 cursor-not-allowed"
+                    disabled
+                  >
+                    Sold Out
+                  </button>
+                </div>
+              ) : (
+                <AddToCartButton 
+                  product={{
+                    id: product.id,
+                    name: product.name,
+                    price: product.price,
+                    images: product.images.map((img: any) => getImageUrl(img)).filter(Boolean)
+                  }} 
+                />
+              )}
             </div>
 
             {/* Additional details */}

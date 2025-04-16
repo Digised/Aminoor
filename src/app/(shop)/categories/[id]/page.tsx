@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { Product, Category, Image as PrismaImage } from '@prisma/client';
+import { Product, Category } from '@prisma/client';
 import ProductGrid from '@/components/products/ProductGrid';
 import { notFound } from 'next/navigation';
 import Image from 'next/image';
@@ -16,7 +16,6 @@ interface CategoryPageProps {
 
 type ProductWithDetails = Product & {
   category: Category;
-  images: PrismaImage[];
 };
 
 export default function CategoryPage({ params }: CategoryPageProps) {

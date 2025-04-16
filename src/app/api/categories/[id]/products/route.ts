@@ -11,14 +11,22 @@ export async function GET(
       where: {
         categoryId: params.id,
       },
-      include: {
+      select: {
+        id: true,
+        name: true,
+        description: true,
+        price: true,
+        stock: true,
+        categoryId: true,
+        images: true,
+        createdAt: true,
+        updatedAt: true,
         category: {
           select: {
             id: true,
             name: true,
           }
         },
-        images: true,
       },
       orderBy: {
         createdAt: 'desc',

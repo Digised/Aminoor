@@ -24,11 +24,7 @@ export default async function OrderPage({
     include: {
       items: {
         include: {
-          product: {
-            include: {
-              images: true
-            }
-          }
+          product: true
         }
       }
     },
@@ -111,7 +107,7 @@ export default async function OrderPage({
                       <div className="h-10 w-10 flex-shrink-0">
                         <Image
                           className="h-10 w-10 rounded object-cover"
-                          src={item.product.images[0]?.url || '/placeholder.jpg'}
+                          src={(item.product as any).images?.[0] || '/placeholder.jpg'}
                           alt={item.product.name}
                           width={40}
                           height={40}

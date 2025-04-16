@@ -4,13 +4,13 @@ import Link from 'next/link'
 import Image from 'next/image'
 import { SafeProduct } from '@/types'
 import AddToCartButton from './AddToCartButton'
-import { Product, Category, Image as PrismaImage } from '@prisma/client'
+import { Product, Category } from '@prisma/client'
 import ProductCard from './ProductCard'
 
 interface ProductGridProps {
   products: (Product & {
     category?: Category | null;
-    images: PrismaImage[];
+    images: any[];
   })[]
 }
 

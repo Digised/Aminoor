@@ -2,13 +2,13 @@
 
 import { useRouter, useSearchParams } from 'next/navigation'
 import { SafeCategory } from '@/types'
-import { useState, useEffect } from 'react'
+import { useState, useEffect, Suspense } from 'react'
 
 interface ProductFiltersProps {
   categories: SafeCategory[]
 }
 
-export default function ProductFilters({ categories }: ProductFiltersProps) {
+function ProductFiltersComponent({ categories }: ProductFiltersProps) {
   const router = useRouter()
   const searchParams = useSearchParams()
   const [priceRange, setPriceRange] = useState({
@@ -123,5 +123,49 @@ export default function ProductFilters({ categories }: ProductFiltersProps) {
         </div>
       </div>
     </div>
+  )
+}
+
+function ProductFiltersFallback() {
+  return (
+    <div className="bg-white p-6 rounded-lg shadow animate-pulse">
+      <div className="h-5 bg-gray-200 rounded w-1/3 mb-4"></div>
+      
+      {/* Categories placeholder */}
+      <div className="mb-6">
+        <div className="h-4 bg-gray-200 rounded w-1/4 mb-2"></div>
+        <div className="space-y-2">
+          {[1, 2, 3].map((i) => (
+            <div key={i} className="flex items-center">
+              <div className="h-4 w-4 bg-gray-200 rounded-full"></div>
+              <div className="ml-2 h-4 bg-gray-200 rounded w-2/3"></div>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* Price Range placeholder */}
+      <div>
+        <div className="h-4 bg-gray-200 rounded w-1/4 mb-2"></div>
+        <div className="grid grid-cols-2 gap-4">
+          <div>
+            <div className="h-4 bg-gray-200 rounded w-1/4 mb-1"></div>
+            <div className="h-8 bg-gray-200 rounded w-full"></div>
+          </div>
+          <div>
+            <div className="h-4 bg-gray-200 rounded w-1/4 mb-1"></div>
+            <div className="h-8 bg-gray-200 rounded w-full"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  )
+}
+
+export default function ProductFilters(props: ProductFiltersProps) {
+  return (
+    <Suspense fallback={<ProductFiltersFallback />}>
+      <ProductFiltersComponent {...props} />
+    </Suspense>
   )
 } 

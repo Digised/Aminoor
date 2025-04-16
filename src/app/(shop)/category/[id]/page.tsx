@@ -13,7 +13,7 @@ interface ProductWithCategory {
   price: number
   categoryId: string
   category: Category | null
-  images: { id: string; url: string }[]
+  images: string[]
 }
 
 export default function CategoryPage() {
@@ -117,7 +117,7 @@ export default function CategoryPage() {
               <div className="relative w-full pt-[75%]">
                 {product.images && product.images[0] ? (
                   <Image
-                    src={product.images[0].url}
+                    src={product.images[0]}
                     alt={product.name}
                     fill
                     className="absolute top-0 left-0 w-full h-full object-cover object-center transition duration-300 group-hover:opacity-90"

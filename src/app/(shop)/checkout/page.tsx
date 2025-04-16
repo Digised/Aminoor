@@ -5,6 +5,7 @@ import { useCart } from '@/hooks/useCart'
 import { useState, useEffect } from 'react'
 import { formatPrice } from '@/lib/utils'
 import Image from 'next/image'
+import { toast } from 'react-hot-toast'
 
 export const dynamic = 'force-dynamic'
 
@@ -15,10 +16,7 @@ interface CheckoutItem {
     id: string
     name: string
     price: number
-    images: {
-      id: string
-      url: string
-    }[]
+    images: string[]
   }
 }
 
@@ -38,6 +36,11 @@ export default function CheckoutPage() {
     0
   )
 
+  // Ensure the total is a valid number and not too large
+  const validTotal = !isNaN(total) && isFinite(total) && total > 0 && total < 1000000 
+    ? total 
+    : 0;
+
   if (!mounted) {
     return null
   }
@@ -52,6 +55,13 @@ export default function CheckoutPage() {
     setLoading(true)
     setError('')
 
+    // Validate total amount
+    if (validTotal <= 0) {
+      setError('Invalid order total. Please try again or contact support.')
+      setLoading(false)
+      return
+    }
+
     try {
       const formData = new FormData(e.currentTarget)
       const shippingAddress = [
@@ -64,6 +74,11 @@ export default function CheckoutPage() {
       ]
         .filter(Boolean)
         .join('\n')
+
+      // Validate shipping address
+      if (!shippingAddress || shippingAddress.trim().length < 10) {
+        throw new Error('Please provide complete shipping information')
+      }
 
       const response = await fetch('/api/checkout', {
         method: 'POST',
@@ -80,17 +95,24 @@ export default function CheckoutPage() {
         }),
       })
 
+      const data = await response.json()
+      
       if (!response.ok) {
-        const data = await response.json()
-        throw new Error(data.message || 'Something went wrong')
+        throw new Error(data.message || 'Something went wrong during checkout')
       }
 
-      const { orderId } = await response.json()
+      const { orderId } = data
+      
+      if (!orderId) {
+        throw new Error('Order was created but no order ID was returned')
+      }
+      
       clearCart()
-      router.push(`/orders/${orderId}`)
+      toast.success('Order placed successfully!')
+      router.push(`/account/orders/${orderId}`)
     } catch (error) {
       console.error('Checkout error:', error)
-      setError(error instanceof Error ? error.message : 'Something went wrong')
+      setError(error instanceof Error ? error.message : 'Something went wrong during checkout. Please try again.')
     } finally {
       setLoading(false)
     }
@@ -204,15 +226,19 @@ export default function CheckoutPage() {
               </div>
 
               {error && (
-                <div className="text-red-600 text-sm">{error}</div>
+                <div className="bg-red-50 border border-red-200 rounded-md p-4 mb-4">
+                  <div className="flex">
+                    <div className="text-red-600 text-sm">{error}</div>
+                  </div>
+                </div>
               )}
 
               <button
                 type="submit"
-                disabled={loading}
+                disabled={loading || validTotal <= 0}
                 className="w-full bg-indigo-600 text-white py-2 px-4 rounded-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 disabled:opacity-50"
               >
-                {loading ? 'Processing...' : `Pay ${formatPrice(total)}`}
+                {loading ? 'Processing...' : `Pay ${formatPrice(validTotal)}`}
               </button>
             </form>
           </div>
@@ -226,7 +252,7 @@ export default function CheckoutPage() {
                     <li key={item.id} className="py-6 flex">
                       <div className="h-24 w-24 flex-shrink-0 overflow-hidden rounded-md border border-gray-200">
                         <Image
-                          src={item.product.images[0]?.url || '/placeholder.jpg'}
+                          src={typeof item.product.images[0] === 'string' ? item.product.images[0] : '/placeholder.jpg'}
                           alt={item.product.name}
                           width={96}
                           height={96}

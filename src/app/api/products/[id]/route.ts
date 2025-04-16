@@ -10,9 +10,17 @@ export async function GET(
       where: {
         id: params.id,
       },
-      include: {
-        category: true,
+      select: {
+        id: true,
+        name: true,
+        description: true,
+        price: true,
+        stock: true,
+        categoryId: true,
         images: true,
+        createdAt: true,
+        updatedAt: true,
+        category: true,
         reviews: {
           include: {
             user: {
@@ -33,7 +41,13 @@ export async function GET(
       );
     }
 
-    return NextResponse.json(product);
+    // Ensure stock is never negative in the response
+    const responseProduct = {
+      ...product,
+      stock: Math.max(0, product.stock),
+    };
+
+    return NextResponse.json(responseProduct);
   } catch (error) {
     console.error('Error fetching product:', error);
     return NextResponse.json(

@@ -9,19 +9,22 @@ export async function GET() {
       orderBy: {
         createdAt: 'desc',
       },
-      include: {
+      select: {
+        id: true,
+        name: true,
+        description: true,
+        price: true,
+        stock: true,
+        categoryId: true,
+        images: true,
+        createdAt: true,
+        updatedAt: true,
         category: {
           select: {
             id: true,
             name: true,
           }
-        },
-        images: {
-          select: {
-            id: true,
-            url: true,
-          }
-        },
+        }
       },
     });
 
@@ -29,7 +32,7 @@ export async function GET() {
     console.log('Products:', products.map(p => ({
       id: p.id,
       name: p.name,
-      imageCount: p.images.length
+      imageCount: p.images?.length || 0
     })));
 
     return NextResponse.json(products);

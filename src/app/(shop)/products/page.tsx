@@ -1,12 +1,12 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { Product, Category, Image as PrismaImage } from '@prisma/client';
+import { Product, Category } from '@prisma/client';
 import ProductGrid from '@/components/products/ProductGrid';
 
 type ProductWithDetails = Product & {
   category: Category;
-  images: PrismaImage[];
+  images: string[];
 };
 
 export default function ProductsPage() {
